@@ -1,0 +1,51 @@
+PUBLICAR LA WEB EN GITHUB PAGES (ya tienes cuenta)
+===================================================
+
+1) CREAR EL REPOSITORIO
+   - Entra en https://github.com/new
+   - Repository name: web-mama  (en minúsculas; puedes cambiarlo, pero usa solo letras, números y guiones)
+   - Description: (opcional) "Ejercicios de Writer, Calc y Base"
+   - Marca PUBLIC (tiene que ser público para que Pages sea gratis)
+   - NO marques "Add a README file" (ya tenemos el nuestro)
+   - Pulsa "Create repository"
+
+2) SUBIR LOS ARCHIVOS
+   - En la pantalla que sale, pulsa el enlace "uploading an existing file"
+     (o "Add file" → "Upload files").
+   - Arrastra TODOS los archivos de esta carpeta:
+       index.html
+       Portal_Ejercicios.html
+       ejercicios.js
+       Ejercicios_Writer_Calc_Base.pdf
+       README.md
+       LEEME_Mi_Aula.txt
+       Abrir_Mi_Aula.bat
+   - Escribe un mensaje: "Primera versión"
+   - Pulsa "Commit changes"
+
+3) ACTIVAR PAGES
+   - En el repositorio, pulsa "Settings" (el engranaje).
+   - En la barra de la izquierda, pulsa "Pages".
+   - En "Build and deployment":
+       Source  = Deploy from a branch
+       Branch  = main  (o master, el que aparezca)
+       Folder  = /(root)
+   - Pulsa "Save".
+
+4) ABRIR TU WEB
+   - Espera 1 o 2 minutos y recarga la página de Settings → Pages.
+   - Arriba aparecerá un recuadro verde con la dirección, por ejemplo:
+       https://TU-USUARIO.github.io/web-mama/
+   - Ábrela. Ahí está la web para tu madre y para quien le pases el enlace.
+
+5) AÑADIR EJERCICIOS DESPUÉS
+   - Sustituye el archivo ejercicios.js dentro del repositorio:
+     GitHub → ejercicios.js → botón lápiz (Edit) → pega el contenido nuevo → "Commit changes".
+   - En 1 minuto aproximadamente se ve el cambio. Si no aparece, pulsa F5.
+
+IMPORTANTE
+   - Cada persona guarda SUS PDFs y SU progreso en SU navegador. No se comparten entre usuarios.
+   - No hace falta que nadie cree cuenta para entrar: es un enlace público.
+   - Si quieres cambiar el nombre de la web, cambia el nombre del repositorio y la URL cambiará.
+
+Cuando ya esté publicada, pásame el enlace y lo compruebo contigo.

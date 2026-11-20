@@ -1,0 +1,36 @@
+MI AULA DE OFFICE - INSTRUCCIONES RAPIDAS
+==========================================
+
+1) ABRIR LA WEB
+   - Doble clic en "Abrir_Mi_Aula.bat" (se abre sola en Edge),
+     o bien doble clic en "Portal_Ejercicios.html".
+   - Funciona SIN internet y SIN cuenta.
+
+2) PRACTICAR
+   - Pulsa la pestaña Writer, Calc o Base.
+   - Haz los ejercicios en el ordenador.
+   - Marca "Hecho" al terminar y escribe una nota si tienes dudas.
+   - El progreso y las notas se guardan solos.
+
+3) COMPROBAR
+   - Pulsa "Ver respuesta" debajo de cada ejercicio.
+   - En la portada está el mini-examen con sus respuestas.
+
+4) SUBIR PDFs
+   - Pulsa "Mis PDFs" y arrastra tus archivos al recuadro
+     (o haz clic y selecciónalos). Puedes subir varios a la vez.
+   - Desde la lista puedes Abrirlos, Descargarlos o Eliminarlos.
+   - Tus PDFs se guardan solo en este navegador de este ordenador.
+
+5) EJERCICIOS NUEVOS
+   - La lista de ejercicios está en "ejercicios.js".
+   - Cuando se actualice ese archivo, abre la web y pulsa F5.
+   - Aparecerán los ejercicios nuevos sin perder tus PDFs ni tu progreso.
+
+6) IMPRIMIR
+   - Botón "Imprimir esta página" imprime solo el bloque abierto.
+
+IMPORTANTE: deja siempre juntos estos tres archivos en la misma carpeta:
+   Portal_Ejercicios.html
+   ejercicios.js
+   Ejercicios_Writer_Calc_Base.pdf

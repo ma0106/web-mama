@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi aula · Writer, Calc y Base</title>
+<style>
+  :root{
+    --fondo:#f4f7fb; --tarjeta:#ffffff; --texto:#253243; --suave:#69788c;
+    --borde:#e1e7ee; --sombra:0 4px 16px rgba(30,50,80,.08);
+    --writer:#2563a6; --calc:#18846a; --base:#7a4fa3; --acento:#b45309;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Calibri,Arial,sans-serif;background:var(--fondo);color:var(--texto);line-height:1.5}
+  .topbar{background:linear-gradient(120deg,#16324f,#2563a6);color:#fff;padding:18px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .topbar .logo{font-size:34px;line-height:1}
+  .topbar h1{font-size:21px;margin:0}
+  .topbar p{margin:2px 0 0;font-size:12px;opacity:.85}
+  .topbar .der{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12px}
+  .topbar button{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:12px}
+  .topbar button:hover{background:rgba(255,255,255,.28)}
+  nav.tabs{display:flex;gap:4px;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--borde);padding:8px 20px;position:sticky;top:0;z-index:10}
+  nav.tabs button{border:0;background:transparent;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:14px;color:var(--suave);font-weight:600}
+  nav.tabs button:hover{background:#f1f5f9;color:var(--texto)}
+  nav.tabs button.activo{background:#e8f0fa;color:#16324f}
+  .badge{display:inline-block;background:#dbeafe;color:#1e40af;border-radius:12px;padding:0 7px;font-size:11px;margin-left:4px}
+  main{max-width:1080px;margin:0 auto;padding:26px 22px 60px}
+  .tab{display:none}
+  .tab.activo{display:block}
+  h2.titulo{font-size:22px;margin:0 0 6px}
+  .bajada{color:var(--suave);margin:0 0 20px}
+  .tarjeta{background:var(--tarjeta);border:1px solid var(--borde);border-radius:14px;box-shadow:var(--sombra);padding:20px;margin-bottom:18px}
+  .rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .bloque-card{cursor:pointer;transition:transform .15s,box-shadow .15s}
+  .bloque-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(30,50,80,.13)}
+  .bloque-card .icono{font-size:30px}
+  .bloque-card h3{margin:8px 0 4px;font-size:18px}
+  .bloque-card p{margin:0;color:var(--suave);font-size:13px}
+  .bloque-card .mini-prog{margin-top:14px;font-size:12px;color:var(--suave)}
+  .barra{height:9px;background:#e8eef5;border-radius:9px;overflow:hidden;margin-top:7px}
+  .barra > div{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:9px;transition:width .25s;width:0}
+  .progreso-grande .numero{font-size:28px;font-weight:700;color:#16324f}
+  .boton{border:0;border-radius:9px;padding:10px 15px;cursor:pointer;font-size:13px;font-weight:600;background:#e8eef5;color:#16324f}
+  .boton:hover{filter:brightness(.96)}
+  .boton.primario{background:#2563a6;color:#fff}
+  .boton.verde{background:#e1f2ed;color:#0f5f4c}
+  .boton.arbol{background:#fff5e6;color:#92400e}
+  .boton.peligro{background:#fee2e2;color:#991b1b}
+  .cabecera-bloque{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+  .cabecera-bloque .icono{font-size:38px}
+  .cabecera-bloque h2{margin:0;font-size:24px}
+  .cabecera-bloque p{margin:4px 0 0;color:var(--suave)}
+  .cabecera-bloque .buscar{margin-left:auto;min-width:230px}
+  input[type=search],textarea{font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid #cbd5e1;border-radius:8px;width:100%;background:#fff}
+  .material{background:#f8fafc;border:1px dashed #b9c6d4;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:13px}
+  .material h3{margin:0 0 8px;font-size:14px;color:var(--suave)}
+  .material pre{margin:0;font-family:Consolas,"Courier New",monospace;font-size:12.5px;white-space:pre-wrap;word-break:break-word}
+  .ej{border:1px solid var(--borde);border-left:5px solid var(--writer);border-radius:12px;background:#fff;padding:16px 18px;margin-bottom:14px;box-shadow:var(--sombra)}
+  #tab-calc .ej{border-left-color:var(--calc)}
+  #tab-base .ej{border-left-color:var(--base)}
+  .ej-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .num{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border-radius:8px;background:#e8eef5;color:#16324f;font-weight:700;font-size:13px}
+  #tab-calc .num{background:#e1f2ed;color:#0f5f4c}
+  #tab-base .num{background:#efe7f6;color:#5c2f80}
+  .ej-head h3{margin:0;font-size:16px;flex:1}
+  .hecho{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--suave);cursor:pointer;white-space:nowrap}
+  .hecho input{width:17px;height:17px;cursor:pointer;accent-color:#16a34a}
+  .objetivo{font-size:12px;color:var(--suave);margin:8px 0 10px}
+  .objetivo b{color:#8a97a8;letter-spacing:.3px}
+  ol.tareas{margin:0;padding-left:22px;font-size:13.5px}
+  ol.tareas li{margin:5px 0}
+  .pista{margin-top:10px;background:#fffbeb;border-left:3px solid #f59e0b;padding:7px 11px;border-radius:0 6px 6px 0;font-size:12.5px;color:#78500f}
+  .extra{margin-top:10px;background:#f8fafc;border:1px solid var(--borde);border-radius:8px;padding:10px;font-family:Consolas,"Courier New",monospace;font-size:12px;white-space:pre-wrap}
+  .ej-actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+  .respuesta{margin-top:12px;background:#fffdf6;border:1px solid #ecdcb0;border-radius:9px;padding:12px 14px;font-size:13px;color:#5c4708}
+  .respuesta[hidden]{display:none}
+  .mi-nota{margin-top:12px;font-size:12px;color:var(--suave)}
+  .mi-nota textarea{margin-top:4px;min-height:44px;resize:vertical}
+  .zona{border:2px dashed #9db4cc;border-radius:14px;background:#fafcff;padding:32px 20px;text-align:center;cursor:pointer;transition:.15s}
+  .zona:hover,.zona.arrastrando{background:#eef5fd;border-color:#2563a6}
+  .zona .icono{font-size:40px}
+  .zona h3{margin:8px 0 4px}
+  .zona p{margin:0;color:var(--suave);font-size:13px}
+  #filePdfs{display:none}
+  .pdf-item{display:flex;align-items:center;gap:12px;border:1px solid var(--borde);border-radius:10px;padding:12px 14px;margin-top:10px;background:#fff}
+  .pdf-item .icono{font-size:26px}
+  .pdf-item .info{flex:1;min-width:0}
+  .pdf-item .info b{display:block;font-size:14px;word-break:break-all}
+  .pdf-item .info span{font-size:12px;color:var(--suave)}
+  .pdf-item .acciones{display:flex;gap:6px;flex-wrap:wrap}
+  .vacio{text-align:center;color:var(--suave);padding:28px 10px;font-size:14px}
+  .aviso{background:#eef5fd;border-left:4px solid #2563a6;border-radius:0 8px 8px 0;padding:12px 15px;font-size:13px;margin-bottom:18px}
+  .pregunta{border-bottom:1px dashed var(--borde);padding:10px 0;font-size:13.5px}
+  .pregunta:last-child{border-bottom:0}
+  .pregunta .r{margin-top:8px;background:#fffdf6;border:1px solid #ecdcb0;border-radius:7px;padding:8px 10px;color:#5c4708;font-size:13px}
+  .pregunta .r[hidden]{display:none}
+  ol.preguntas{padding-left:22px;margin:0}
+  footer{text-align:center;color:#8a97a8;font-size:12px;padding:20px;border-top:1px solid var(--borde)}
+  @media (max-width:640px){
+    .topbar{padding:14px 16px}.topbar .der{margin-left:0;width:100%}
+    nav.tabs{padding:6px 10px}nav.tabs button{padding:8px 10px;font-size:12px}
+    main{padding:18px 12px 40px}.cabecera-bloque .buscar{margin-left:0;width:100%}
+    .pdf-item{flex-wrap:wrap}
+  }
+  @media print{
+    body{background:#fff}
+    .topbar,nav.tabs,footer,.ej-actions,.mi-nota,.zona,#filePdfs,.boton{display:none!important}
+    main{padding:0;max-width:none}
+    .tab{display:none!important}.tab.activo{display:block!important}
+    .tarjeta,.ej{box-shadow:none;break-inside:avoid}
+    .respuesta[hidden]{display:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">🎓</div>
+  <div>
+    <h1>Mi aula de Office</h1>
+    <p>Writer · Calc · Base — ejercicios y respuestas</p>
+  </div>
+  <div class="der">
+    <span id="fechaHoy"></span>
+    <button id="btnImprimir" type="button">🖨️ Imprimir esta página</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button type="button" data-tab="inicio" class="activo">🏠 Inicio</button>
+  <button type="button" data-tab="writer">📘 Writer</button>
+  <button type="button" data-tab="calc">📊 Calc</button>
+  <button type="button" data-tab="base">🗂️ Base</button>
+  <button type="button" data-tab="pdfs">📎 Mis PDFs <span class="badge" id="contadorPdfs">0</span></button>
+  <button type="button" data-tab="ayuda">❓ Ayuda</button>
+</nav>
+
+<main>
+  <section class="tab activo" id="tab-inicio">
+    <h2 class="titulo">¡Hola! 👋</h2>
+    <p class="bajada">Aquí tienes tus ejercicios. Hazlos sin mirar las respuestas y, cuando termines, pulsa «Ver respuesta».</p>
+
+    <div class="tarjeta progreso-grande">
+      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+        <div><div class="numero" id="numHechos">0</div><div style="font-size:12px;color:var(--suave)">ejercicios hechos de <span id="numTotal">0</span></div></div>
+        <div style="flex:1;min-width:200px"><div class="barra"><div id="barraProgreso"></div></div>
+        <small id="textoProgreso" style="color:var(--suave)">Empieza por donde quieras</small></div>
+      </div>
+    </div>
+
+    <h3 style="margin:22px 0 10px">Elige un bloque</h3>
+    <div class="rejilla" id="tarjetasBloques"></div>
+
+    <div class="tarjeta" style="margin-top:20px">
+      <h3 style="margin-top:0">✅ Mini-examen final</h3>
+      <p class="bajada" style="margin-bottom:8px">Seis preguntas rápidas para repasar lo importante.</p>
+      <ol class="preguntas" id="miniPreguntas"></ol>
+    </div>
+
+    <div class="aviso">
+      <b>Novedades:</b> edición <span id="versionCatalogo">1</span> del <span id="fechaCatalogo"></span>.
+      Cuando se añadan ejercicios nuevos, abre esta página y pulsa <b>F5</b> (o el botón de recargar) para verlos.
+    </div>
+  </section>
+
+  <section class="tab" id="tab-writer"></section>
+  <section class="tab" id="tab-calc"></section>
+  <section class="tab" id="tab-base"></section>
+
+  <section class="tab" id="tab-pdfs">
+    <h2 class="titulo">Mis PDFs</h2>
+    <p class="bajada">Sube aquí tus exámenes, apuntes o los PDFs que quieras tener a mano.</p>
+
+    <div class="aviso">
+      🔒 Tus archivos se guardan <b>solo en este navegador, en este ordenador</b>. No se suben a internet ni necesitan cuenta.
+      Si borras los datos del navegador se perderán: usa el botón «Descargar» para hacer copias.
+    </div>
+
+    <div class="zona" id="zonaSubida">
+      <div class="icono">📤</div>
+      <h3>Arrastra tus PDFs aquí</h3>
+      <p>o haz clic para elegirlos desde tu ordenador (puedes seleccionar varios)</p>
+    </div>
+    <input type="file" id="filePdfs" accept=".pdf,application/pdf" multiple>
+
+    <div style="margin:18px 0 8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <h3 style="margin:0">Archivos guardados</h3>
+      <button type="button" class="boton" id="btnAbrirOriginal">📖 Abrir el cuaderno PDF original</button>
+    </div>
+    <div id="listaPdfs"><div class="vacio">Todavía no has subido ningún PDF.</div></div>
+  </section>
+
+  <section class="tab" id="tab-ayuda">
+    <h2 class="titulo">Cómo funciona esta web</h2>
+    <div class="tarjeta">
+      <h3>1. Practicar</h3>
+      <p>Entra en Writer, Calc o Base. Cada ejercicio tiene su objetivo y sus pasos. Marca «Hecho» cuando lo termines y escribe una nota si tienes alguna duda. Tu progreso se guarda solo.</p>
+      <h3>2. Comprobar</h3>
+      <p>Pulsa «Ver respuesta» debajo de cada ejercicio. Las respuestas están preparadas con los resultados exactos. También está el mini-examen en la portada.</p>
+      <h3>3. Subir PDFs</h3>
+      <p>Ve a «Mis PDFs» y arrastra tus archivos (o haz clic en el recuadro). Desde ahí puedes abrirlos, descargarlos o borrarlos.</p>
+      <h3>4. Añadir más ejercicios</h3>
+      <p>La lista de ejercicios está en un archivo llamado <b>ejercicios.js</b>, en esta misma carpeta. Cuando se lo pidas, ese archivo se actualiza. Tu madre solo tiene que abrir esta web y pulsar <b>F5</b>: aparecerán los ejercicios nuevos sin borrar sus PDFs ni su progreso.</p>
+      <h3>5. Imprimir</h3>
+      <p>El botón «Imprimir esta página» imprime solo el bloque que esté abierto, sin los botones.</p>
+      <div class="aviso" style="margin:18px 0 0">
+        <b>Consejo:</b> para abrirla siempre igual, haz clic derecho sobre <b>Portal_Ejercicios.html</b> →
+        «Abrir con» → Microsoft Edge (o Chrome). También puedes crear un acceso directo en el escritorio.
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>Mi aula de Office · Funciona sin internet · Hecho para practicar paso a paso</footer>
+
+<script src="ejercicios.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  if (!window.CATALOGO) {
+    document.body.innerHTML = '<div style="padding:40px;font-family:sans-serif">' +
+      '<h1>Falta el archivo ejercicios.js</h1>' +
+      '<p>Deja <b>Portal_Ejercicios.html</b> y <b>ejercicios.js</b> en la misma carpeta y vuelve a abrir la página.</p></div>';
+    return;
+  }
+
+  var CAT = window.CATALOGO;
+  var KEY = "aula_oficina_progreso_v1";
+  var progreso = { hecho: {}, notas: {} };
+  try {
+    var guardado = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (guardado && typeof guardado === "object") {
+      progreso.hecho = guardado.hecho || {};
+      progreso.notas = guardado.notas || {};
+    }
+  } catch (e) { /* empezamos de cero */ }
+
+  function guardarProgreso() {
+    try { localStorage.setItem(KEY, JSON.stringify(progreso)); } catch (e) {}
+  }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function normaliza(s) {
+    return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+  function num(a, b) { return a - b; }
+
+  document.getElementById("fechaHoy").textContent = new Date().toLocaleDateString("es-ES",
+    { weekday: "long", day: "numeric", month: "long" });
+  document.getElementById("versionCatalogo").textContent = CAT.version;
+  document.getElementById("fechaCatalogo").textContent = CAT.actualizado;
+
+  var todos = [];
+  CAT.bloques.forEach(function (b) { b.ejercicios.forEach(function (e) { todos.push(e.num); }); });
+  todos.sort(num);
+  document.getElementById("numTotal").textContent = todos.length;
+
+  /* ---------- Pestañas ---------- */
+  function cambiarTab(id) {
+    document.querySelectorAll("nav.tabs button").forEach(function (boton) {
+      boton.classList.toggle("activo", boton.getAttribute("data-tab") === id);
+    });
+    document.querySelectorAll(".tab").forEach(function (seccion) {
+      seccion.classList.toggle("activo", seccion.id === "tab-" + id);
+    });
+    window.scrollTo(0, 0);
+    if (id === "pdfs") cargarPdfs();
+  }
+  document.getElementById("tabs").addEventListener("click", function (ev) {
+    var b = ev.target.closest("button[data-tab]");
+    if (b) cambiarTab(b.getAttribute("data-tab"));
+  });
+  document.getElementById("btnImprimir").addEventListener("click", function () { window.print(); });
+
+  /* ---------- Progreso ---------- */
+  function refrescarProgreso() {
+    var hechos = 0;
+    todos.forEach(function (n) { if (progreso.hecho[n]) hechos++; });
+    var pct = todos.length ? Math.round(hechos * 100 / todos.length) : 0;
+    document.getElementById("numHechos").textContent = hechos;
+    document.getElementById("barraProgreso").style.width = pct + "%";
+    document.getElementById("textoProgreso").textContent =
+      pct === 100 ? "¡Todo hecho! Enhorabuena 🎉" : pct + "% completado — sigue así";
+    document.querySelectorAll("[data-progreso-bloque]").forEach(function (el) {
+      var id = el.getAttribute("data-progreso-bloque");
+      var bloque = CAT.bloques.filter(function (b) { return b.id === id; })[0];
+      var h = bloque.ejercicios.filter(function (e) { return progreso.hecho[e.num]; }).length;
+      el.querySelector(".hechos").textContent = h + " / " + bloque.ejercicios.length + " hechos";
+      el.querySelector(".barra > div").style.width =
+        (bloque.ejercicios.length ? h * 100 / bloque.ejercicios.length : 0) + "%";
+    });
+    document.querySelectorAll("input.hechoCheck").forEach(function (c) {
+      c.checked = !!progreso.hecho[c.getAttribute("data-num")];
+    });
+  }
+
+  /* ---------- Portada ---------- */
+  function renderInicio() {
+    var html = "";
+    CAT.bloques.forEach(function (b) {
+      var tamano = b.material ? (b.material.length > 180 ? "font-size:12px" : "") : "";
+      html += '<article class="tarjeta bloque-card" data-ir="' + esc(b.id) + '" data-progreso-bloque="' + esc(b.id) + '">' +
+        '<div class="icono">' + esc(b.icono) + '</div>' +
+        '<h3 style="color:' + esc(b.color) + '">' + esc(b.nombre) + '</h3>' +
+        '<p>' + esc(b.descripcion) + '</p>' +
+        '<div class="mini-prog"><span class="hechos">0 / 0 hechos</span>' +
+        '<div class="barra"><div></div></div></div></article>';
+    });
+    document.getElementById("tarjetasBloques").innerHTML = html;
+
+    var mini = "";
+    CAT.mini.preguntas.forEach(function (p, i) {
+      var n = String(i + 1);
+      mini += '<li class="pregunta"><span>' + esc(p) + '</span>' +
+        '<button type="button" class="boton arbol" data-resp="mini-' + n + '" style="margin-left:8px">Ver respuesta</button>' +
+        '<div class="r" id="r-mini-' + n + '" hidden>' + esc(CAT.mini.respuestas[n] || "(sin respuesta)") + '</div></li>';
+    });
+    document.getElementById("miniPreguntas").innerHTML = mini;
+    refrescarProgreso();
+  }
+
+  document.getElementById("tarjetasBloques").addEventListener("click", function (ev) {
+    var c = ev.target.closest("[data-ir]");
+    if (c) cambiarTab(c.getAttribute("data-ir"));
+  });
+
+  /* ---------- Bloques ---------- */
+  function renderBloque(b) {
+    var html = '<div class="cabecera-bloque">' +
+      '<div class="icono">' + esc(b.icono) + '</div>' +
+      '<div><h2 style="color:' + esc(b.color) + '">' + esc(b.nombre) + '</h2>' +
+      '<p>' + esc(b.descripcion) + '</p></div>' +
+      '<div class="buscar"><input type="search" data-buscar="' + esc(b.id) +
+      '" placeholder="Buscar en ' + esc(b.nombre) + '…"></div></div>';
+
+    if (b.material) {
+      html += '<div class="material"><h3>📄 Material para este bloque (cópialo o tenlo a mano)</h3>' +
+        '<pre>' + esc(b.material) + '</pre></div>';
+    }
+
+    b.ejercicios.forEach(function (e) {
+      var n = e.num;
+      html += '<article class="ej" data-titulo="' + esc(e.titulo + " " + e.objetivo + " " + e.tareas.join(" ")) + '">' +
+        '<div class="ej-head"><span class="num">' + n + '</span><h3>' + esc(e.titulo) + '</h3>' +
+        '<label class="hecho"><input type="checkbox" class="hechoCheck" data-num="' + n + '"> Hecho</label></div>' +
+        (e.objetivo ? '<p class="objetivo"><b>OBJETIVO:</b> ' + esc(e.objetivo) + '</p>' : '') +
+        '<ol class="tareas">';
+      e.tareas.forEach(function (t) { html += '<li>' + esc(t) + '</li>'; });
+      html += '</ol>';
+      if (e.pista) html += '<div class="pista">💡 ' + esc(e.pista) + '</div>';
+      if (e.extra) html += '<div class="extra">' + esc(e.extra) + '</div>';
+      html += '<div class="ej-actions"><button type="button" class="boton arbol" data-resp="' + n +
+        '">👁 Ver respuesta</button></div>' +
+        '<div class="respuesta" id="r-' + n + '" hidden>' + esc(CAT.respuestas[n] || "(sin respuesta)") + '</div>' +
+        '<div class="mi-nota"><label>✏️ Mi nota sobre este ejercicio:' +
+        '<textarea data-nota="' + n + '" placeholder="Escribe aquí tus dudas…">' +
+        esc(progreso.notas[n] || "") + '</textarea></label></div>' +
+        '</article>';
+    });
+
+    document.getElementById("tab-" + b.id).innerHTML = html;
+  }
+  CAT.bloques.forEach(renderBloque);
+
+  /* ---------- Eventos compartidos (respuestas, hechos, notas, búsqueda) ---------- */
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest("button[data-resp]");
+    if (!b) return;
+    var id = b.getAttribute("data-resp");
+    var caja = document.getElementById("r-" + id);
+    if (!caja) return;
+    caja.hidden = !caja.hidden;
+    b.textContent = caja.hidden
+      ? (id.indexOf("mini-") === 0 ? "Ver respuesta" : "👁 Ver respuesta")
+      : "🙈 Ocultar respuesta";
+  });
+
+  document.addEventListener("change", function (ev) {
+    var c = ev.target.closest("input.hechoCheck");
+    if (!c) return;
+    progreso.hecho[c.getAttribute("data-num")] = c.checked;
+    guardarProgreso();
+    refrescarProgreso();
+  });
+
+  document.addEventListener("input", function (ev) {
+    var t = ev.target.closest("textarea[data-nota]");
+    if (t) { progreso.notas[t.getAttribute("data-nota")] = t.value; guardarProgreso(); return; }
+    var s = ev.target.closest("input[data-buscar]");
+    if (!s) return;
+    var q = normaliza(s.value.trim());
+    var tab = s.closest(".tab");
+    tab.querySelectorAll(".ej").forEach(function (art) {
+      art.style.display = normaliza(art.getAttribute("data-titulo")).indexOf(q) >= 0 ? "" : "none";
+    });
+  });
+
+  /* ---------- Base de datos local de PDFs ---------- */
+  var db = null;
+  function abrirDB() {
+    return new Promise(function (resolve, reject) {
+      if (db) { resolve(db); return; }
+      var req = indexedDB.open("aula_oficina_pdfs", 1);
+      req.onupgradeneeded = function () {
+        var d = req.result;
+        if (!d.objectStoreNames.contains("pdfs")) {
+          d.createObjectStore("pdfs", { keyPath: "id", autoIncrement: true });
+        }
+      };
+      req.onsuccess = function () { db = req.result; resolve(db); };
+      req.onerror = function () { reject(req.error); };
+    });
+  }
+  function txPdfs(modo, accion) {
+    return abrirDB().then(function (d) {
+      return new Promise(function (resolve, reject) {
+        var tx = d.transaction("pdfs", modo);
+        var store = tx.objectStore("pdfs");
+        var req = accion(store);
+        req.onsuccess = function () { resolve(req.result); };
+        req.onerror = function () { reject(req.error); };
+      });
+    });
+  }
+  function formatoTamano(n) {
+    if (n < 1024) return n + " B";
+    if (n < 1024 * 1024) return Math.round(n / 1024) + " KB";
+    return (n / 1024 / 1024).toFixed(1) + " MB";
+  }
+  function cordsFecha(iso) {
+    var d = new Date(iso);
+    return isNaN(d.getTime()) ? "" : d.toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" });
+  }
+  function abrirBlob(blob, nombre, descargar) {
+    var url = URL.createObjectURL(blob);
+    if (descargar) {
+      var a = document.createElement("a");
+      a.href = url; a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
+    } else {
+      window.open(url, "_blank");
+    }
+    setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+  }
+
+  function cargarPdfs() {
+    var contenedor = document.getElementById("listaPdfs");
+    txPdfs("readonly", function (s) { return s.getAll(); }).then(function (regs) {
+      regs.sort(function (a, b) { return b.id - a.id; });
+      document.getElementById("contadorPdfs").textContent = regs.length;
+      if (!regs.length) {
+        contenedor.innerHTML = '<div class="vacio">Todavía no has subido ningún PDF. Usa el recuadro de arriba.</div>';
+        return;
+      }
+      var total = regs.reduce(function (s, r) { return s + (r.tamano || 0); }, 0);
+      var html = '<p style="font-size:12px;color:var(--suave);margin:0 0 4px">' +
+        regs.length + ' archivo(s) · ' + formatoTamano(total) + ' en total</p>';
+      regs.forEach(function (r) {
+        html += '<div class="pdf-item" data-id="' + r.id + '">' +
+          '<div class="icono">📕</div><div class="info"><b>' + esc(r.nombre) + '</b>' +
+          '<span>' + formatoTamano(r.tamano) + ' · ' + esc(cordsFecha(r.fecha)) + '</span></div>' +
+          '<div class="acciones">' +
+          '<button type="button" class="boton primario" data-accion="abrir">Abrir</button>' +
+          '<button type="button" class="boton verde" data-accion="descargar">Descargar</button>' +
+          '<button type="button" class="boton peligro" data-accion="borrar">Eliminar</button>' +
+          '</div></div>';
+      });
+      contenedor.innerHTML = html;
+      contenedor._regs = regs;
+    }).catch(function () {
+      contenedor.innerHTML = '<div class="vacio">No se han podido leer los PDFs guardados.</div>';
+    });
+  }
+
+  var zona = document.getElementById("zonaSubida");
+  var input = document.getElementById("filePdfs");
+  zona.addEventListener("click", function () { input.click(); });
+  ["dragenter", "dragover"].forEach(function (ev) {
+    zona.addEventListener(ev, function (e) { e.preventDefault(); zona.classList.add("arrastrando"); });
+  });
+  ["dragleave", "drop"].forEach(function (ev) {
+    zona.addEventListener(ev, function (e) { e.preventDefault(); zona.classList.remove("arrastrando"); });
+  });
+  zona.addEventListener("drop", function (e) { subirArchivos(e.dataTransfer.files); });
+  input.addEventListener("change", function () { subirArchivos(input.files); input.value = ""; });
+
+  function subirArchivos(files) {
+    var lista = Array.prototype.slice.call(files || []).filter(function (f) {
+      return /\.pdf$/i.test(f.name) || f.type === "application/pdf";
+    });
+    if (!lista.length) { alert("Selecciona archivos PDF (.pdf)."); return; }
+    Promise.all(lista.map(function (f) {
+      return txPdfs("readwrite", function (s) {
+        return s.add({ nombre: f.name, tamano: f.size, fecha: new Date().toISOString(), blob: f });
+      });
+    })).then(function () {
+      cargarPdfs();
+    }).catch(function () {
+      alert("No se han podido guardar los PDFs. Puede que el navegador tenga poco espacio.");
+    });
+  }
+
+  document.getElementById("listaPdfs").addEventListener("click", function (ev) {
+    var boton = ev.target.closest("button[data-accion]");
+    if (!boton) return;
+    var item = boton.closest(".pdf-item");
+    var id = Number(item.getAttribute("data-id"));
+    var regs = this._regs || [];
+    var reg = regs.filter(function (r) { return r.id === id; })[0];
+    if (!reg) return;
+    var accion = boton.getAttribute("data-accion");
+    if (accion === "abrir") abrirBlob(reg.blob, reg.nombre, false);
+    if (accion === "descargar") abrirBlob(reg.blob, reg.nombre, true);
+    if (accion === "borrar") {
+      if (!confirm("¿Eliminar «" + reg.nombre + "» de esta web?")) return;
+      txPdfs("readwrite", function (s) { return s.delete(id); }).then(cargarPdfs);
+    }
+  });
+
+  document.getElementById("btnAbrirOriginal").addEventListener("click", function () {
+    window.open("Ejercicios_Writer_Calc_Base.pdf", "_blank");
+  });
+
+  /* ---------- Arranque ---------- */
+  renderInicio();
+  cargarPdfs();
+})();
+</script>
+</body>
+</html>
